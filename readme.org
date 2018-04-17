@@ -1,0 +1,2 @@
+* PHP Commands
+An implementation of the command pattern, designed to be used as application layer of an onion architecture based application.
