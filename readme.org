@@ -1,2 +1,110 @@
 * PHP Commands
-An implementation of the command pattern, designed to be used as application layer of an onion architecture based application.
+An opinionated implementation of the command pattern, designed to be used as application layer of an onion architecture based application.
+** Installation
+#+BEGIN_SRC sh
+composer require popcorn4dinner/policies
+#+END_SRC
+** Usage
+Each action in your application will be represented by 2 classes. The *command* and the *handler*:
+The *command* represents the input to your action. It's a simple stateful object containing all data needed to perform the action.
+#+BEGIN_SRC php
+class PlaceOrder implements CommandInterface
+{
+    public $itemId;
+
+    public $placedAt;
+
+    public $price;
+}
+#+END_SRC
+
+The *handler* is responsible for the flow of performing the action. It makes sure all needed steps are executed in the right order.
+#+BEGIN_SRC php
+ class PlaceOrderHandler extends AbstractAuthenticatedCommandHandler
+ {
+     /**
+      * @param CommandInterface $command
+      * @return Order
+      * @throws PolicyValidationException
+      */
+     public function handle(CommandInterface $command, $user = null): Order
+     {    
+         $order = $this->orderFactory->createOrderFor($command->orderItem, $command->placedAt, $user->id)
+
+         if($this->orderValidator->isValid($order, OrderAction::create())){
+             $order = $this->orderRepository->create($order);
+
+             $this->paymentGateway->schedulePaymentFor($order->price);
+
+             $this->mailer->sendConfrmationEmailTo($user, $order);
+             $this->mailer->sendIncomingOrderNotificationTo($CUSTOMER_SERVICE, $order);
+
+             $this->crm->upload($order);
+         }
+
+         return $order;
+     }
+
+ }
+#+END_SRC
+** A word on Onion Architecture
+ How I see it, Onion Architecture is essentially one thing: A simplified version of DDD that helps you to keep your easy to read, extend, maintain and reason about.
+ This is a exelent blog post on Onion Architecture that is worth reading: 
+ http://jeffreypalermo.com/blog/the-onion-architecture-part-1/
+*** Short summary
+ If you want your application to be an onion, you will essentially distinguish three layers: Infrastructure, Application and Domain.
+ That being said, most of the literature describes a few more or calls them slightly differently. I'm trying to keep this simple, so we will go with the three above.
+
+ *The golden rule:* Dependencies are only allowed to go inverts. That means that the everything in the infrastructure is allowed to depend on the application or domain layer,
+ but not the other way around. For this to work, it's common practice to create interfaces inside your domain that determine your contract with 
+ the infrastructure you want to use. At the same time, it allows you to replace databases, filesystems and even frameworks on the fly, without the important part of your application to be effected.
+ You can even think of scenarios, where, for testing, you want to use an in-memory database instead of running an sql server, or write emails to files instead of sending them.
+ Following *Onion Architecture*, those things are no problem at all. 
+[[./onion_schema_large.png]]
+ Imagine we were designing a micro service that allows placing orders in a online shop...
+**** Infrastructure
+ The *infrastructure* layer of your onion contains things like the UI, Repositories to communicate with Databases,
+ Filesystems, etc. If you are using an MVC frameworks, this is part of your *infrastructure layer* as well.  
+**** Application
+ Here is, where I use this library. The *application layer* is responsible for the flow of your application. It's where you determine 
+ which steps have to be performed in which order.
+ Take an incoming order as an example:
+ #+BEGIN_SRC php
+ class PlaceOrderHandler extends AbstractAuthenticatedCommandHandler
+ {
+     /**
+      * @param CommandInterface $command
+      * @return Order
+      * @throws PolicyValidationException
+      */
+     public function handle(CommandInterface $command, $user = null): Order
+     {    
+         $order = $this->orderFactory->createOrderFor($command->orderItem, $command->placedAt, $user->id)
+
+         if($this->orderValidator->isValid($order, OrderAction::create())){
+             $order = $this->orderRepository->create($order);
+
+             $this->paymentGateway->schedulePaymentFor($order->price);
+
+             $this->mailer->sendConfrmationEmailTo($user, $order);
+             $this->mailer->sendIncomingOrderNotificationTo($CUSTOMER_SERVICE, $order);
+
+             $this->crm->upload($order);
+         }
+
+         return $order;
+     }
+
+ }
+ #+END_SRC
+**** Domain
+ Your main domain model in this example would probably be an *order*. Part of your *domain* would also be all the knowledge 
+ about what an order has to look like and how to communicate with external services like *payment gateways* and *APIs of your logistics partner*
+ In our example, you would probably find classes like there:
+  - Order
+  - OrderAction
+  - OrderValidator
+  - OrderRepositoryInterface
+  - MailerInterface
+  - PaymentGatewayInterface
+  - CrmInterface
