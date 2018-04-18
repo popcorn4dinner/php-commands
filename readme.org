@@ -1,5 +1,8 @@
 * PHP Commands
 An opinionated implementation of the command pattern, designed to be used as application layer of an onion architecture based application.
+
+[[./onion_schema.png]]
+
 ** Installation
 #+BEGIN_SRC sh
 composer require popcorn4dinner/policies
@@ -60,8 +63,9 @@ The *handler* is responsible for the flow of performing the action. It makes sur
  the infrastructure you want to use. At the same time, it allows you to replace databases, filesystems and even frameworks on the fly, without the important part of your application to be effected.
  You can even think of scenarios, where, for testing, you want to use an in-memory database instead of running an sql server, or write emails to files instead of sending them.
  Following *Onion Architecture*, those things are no problem at all. 
-[[./onion_schema_large.png]]
+
  Imagine we were designing a micro service that allows placing orders in a online shop...
+
 **** Infrastructure
  The *infrastructure* layer of your onion contains things like the UI, Repositories to communicate with Databases,
  Filesystems, etc. If you are using an MVC frameworks, this is part of your *infrastructure layer* as well.  
