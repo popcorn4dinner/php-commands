@@ -64,6 +64,8 @@ The *handler* is responsible for the flow of performing the action. It makes sur
  You can even think of scenarios, where, for testing, you want to use an in-memory database instead of running an sql server, or write emails to files instead of sending them.
  Following *Onion Architecture*, those things are no problem at all. 
 
+[[./onion_schema.png]]
+
  Imagine we were designing a micro service that allows placing orders in a online shop...
 
 **** Infrastructure
