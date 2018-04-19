@@ -50,43 +50,51 @@ The *handler* is responsible for the flow of performing the action. It makes sur
 
  }
 #+END_SRC
-** Populating Commands
-   This library comes with a small helper, that populates command objects for you, if you follow a simple convention. 
-1) The properties in your command must have the same name as the parameter in your request
-2) The name of the request parameters are snake case, the command properties are camel case
-Example:
-| Command property | request parameter |
-|------------------+-------------------|
-| userId           | user_id           |
-| username         | username          |
-| dateOfBirth      | date_of_birth     |
+*** Handler types
+This library provides two types of handlers, one to be used within systems 
+that have a user notion (AbstractAuthenticatedCommandHandler), and one without (AbstractCommandHandler).
+Take a look at the *example folder* for more details.
 
-Using this helper, can make your controllers wonderfully lean: It's only responsibility is now to interface between your application and the web.
-#+BEGIN_SRC php
-class UserController {
+*** Logging
+If you instantiate your handlers with a logger implementing the *Psr/log/LoggerInterface*, every action performed in your application 
+as well as possible failures will be logged automatically.
 
-[...]
+*** Populating Commands
+    This library comes with a small helper, that populates command objects for you, if you follow a simple convention. 
+ 1) The properties in your command must have the same name as the parameter in your request
+ 2) The name of the request parameters are snake case, the command properties are camel case
+ Example:
+ | Command property | request parameter |
+ |------------------+-------------------|
+ | userId           | user_id           |
+ | username         | username          |
+ | dateOfBirth      | date_of_birth     |
 
-   public function resetPassword(
-        Request $request,
-        RequestPasswordResetHandler $handler,
-        \Twig_Environment $twig
-    )
-    {
-        if ($request->getMethod() === static::HTTP_GET) {
-            return $twig->render('forgot-password.twig');
+ Using this helper, can make your controllers wonderfully lean: It's only responsibility is now to interface between your application and the web.
+ #+BEGIN_SRC php
+ class UserController {
 
-        } else {
-            $command = $this->commandPopulator->populate(new RequestPasswordReset(), $request);
-            $user = $handler->handle($command);
+ [...]
 
-            return $twig->render('login.twig', ['message' => 'You will receive an email with reset instructions shortly.']);
-        }
-    }
+    public function resetPassword(
+         Request $request,
+         RequestPasswordResetHandler $handler,
+         \Twig_Environment $twig
+     )
+     {
+         if ($request->getMethod() === static::HTTP_GET) {
+             return $twig->render('forgot-password.twig');
 
-}
-#+END_SRC
+         } else {
+             $command = $this->commandPopulator->populate(new RequestPasswordReset(), $request);
+             $user = $handler->handle($command);
 
+             return $twig->render('login.twig', ['message' => 'You will receive an email with reset instructions shortly.']);
+         }
+     }
+
+ }
+ #+END_SRC
 ** A word on Onion Architecture
  How I see it, Onion Architecture is essentially one thing: A simplified version of DDD that helps you to keep your easy to read, extend, maintain and reason about.
  This is a exelent blog post on Onion Architecture that is worth reading: 
