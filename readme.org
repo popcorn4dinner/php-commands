@@ -5,7 +5,7 @@ An opinionated implementation of the command pattern, designed to be used as app
 
 ** Installation
 #+BEGIN_SRC sh
-composer require popcorn4dinner/policies
+composer require popcorn4dinner/commands
 #+END_SRC
 ** Usage
 Each action in your application will be represented by 2 classes. The *command* and the *handler*:
