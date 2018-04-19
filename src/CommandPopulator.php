@@ -1,6 +1,6 @@
 <?php
 
-namespace Popcorn4dinner\Command;
+namespace Popcorn4dinner\Commands;
 
 use Popcorn4dinner\StringFormat\StringFormat;
 use Symfony\Component\HttpFoundation\Request;

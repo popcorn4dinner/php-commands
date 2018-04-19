@@ -51,8 +51,8 @@ The *handler* is responsible for the flow of performing the action. It makes sur
  }
 #+END_SRC
 *** Handler types
-This library provides two types of handlers, one to be used within systems 
-that have a user notion (AbstractAuthenticatedCommandHandler), and one without (AbstractCommandHandler).
+This library provides two types of handlers, one to be used within applications 
+that have a user notion (AbstractAuthenticatedCommandHandler), and one for applications without (AbstractCommandHandler).
 Take a look at the *example folder* for more details.
 
 *** Logging
@@ -138,7 +138,7 @@ as well as possible failures will be logged automatically.
              $this->paymentGateway->schedulePaymentFor($order->price);
 
              $this->mailer->sendConfrmationEmailTo($user, $order);
-             $this->mailer->sendIncomingOrderNotificationTo($CUSTOMER_SERVICE, $order);
+             $this->mailer->sendIncomingOrderNotificationTo(static::CUSTOMER_SERVICE, $order);
 
              $this->crm->upload($order);
          }

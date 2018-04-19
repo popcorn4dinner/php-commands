@@ -17,7 +17,8 @@
     "php": ">=7.1",
     "esky/enum": "^1.1",
     "popcorn4dinner/string-format": "^0.1.0",
-    "psr/log": "^1.0"
+    "psr/log": "^1.0",
+    "symfony/http-foundation": "^4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~7",
@@ -25,13 +26,13 @@
   },
   "autoload": {
     "psr-4": {
-      "Popcorn4dinner\\Policies\\": "src/"
+      "Popcorn4dinner\\Commands\\": "src/"
     }
   },
     "autoload-dev": {
       "psr-4": {
-        "Popcorn4dinner\\Policies\\Examples\\": "examples/",
-        "Popcorn4dinner\\Policies\\Tests\\": "tests/unit/"
+        "Popcorn4dinner\\Commands\\Examples\\": "examples/",
+        "Popcorn4dinner\\Commands\\Tests\\": "tests/unit/"
       }
     }
 }
