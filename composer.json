@@ -2,7 +2,7 @@
   "name": "popcorn4dinner/commands",
   "description": "An implementation of the command pattern, designed to be used as application layer of an onion architecture based application",
   "type": "library",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "config": {
     "preferred-install": "dist"
@@ -15,7 +15,6 @@
   },
   "require": {
     "php": ">=7.1",
-    "esky/enum": "^1.1",
     "popcorn4dinner/string-format": "^0.1.0",
     "psr/log": "^1.0",
     "symfony/http-foundation": "^4.0"
